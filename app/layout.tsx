@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next"
 import { Archivo } from "next/font/google"
-import { site } from "@/lib/site"
+import { isIndexable, site } from "@/lib/site"
 import { CookieConsent } from "@/components/cookie-consent"
 import "./globals.css"
 
@@ -32,7 +32,9 @@ export const metadata: Metadata = {
     description: site.description,
   },
   twitter: { card: "summary_large_image", title, description: site.description },
-  robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large" } },
+  robots: isIndexable
+    ? { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 } }
+    : { index: false, follow: false },
   formatDetection: { telephone: false },
   // Verificación de Google Search Console (etiqueta meta; no usa cookies)
   ...(process.env.NEXT_PUBLIC_GSC_VERIFICATION ? { verification: { google: process.env.NEXT_PUBLIC_GSC_VERIFICATION } } : {}),

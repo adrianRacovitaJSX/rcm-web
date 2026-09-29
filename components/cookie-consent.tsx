@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react"
 import Link from "next/link"
-import Script from "next/script"
-import { GA_ID, OPEN_SETTINGS_EVENT, deleteAnalyticsCookies, readConsent, saveConsent } from "@/lib/consent"
+import { GoogleAnalytics } from "@next/third-parties/google"
+import { GA_ID, OPEN_SETTINGS_EVENT, deleteAnalyticsCookies, pushConsentDefaults, readConsent, saveConsent } from "@/lib/consent"
 
 type GtagWindow = Window & { gtag?: (...args: unknown[]) => void }
 
@@ -25,6 +25,7 @@ export function CookieConsent() {
     // Se difiere un tick: la elección vive en localStorage y solo se puede leer en el navegador
     const t = setTimeout(() => {
       const c = readConsent()
+      if (c?.analytics) pushConsentDefaults()
       setAnalytics(!!c?.analytics)
       setOpen(!c)
       setReady(true)
@@ -43,6 +44,7 @@ export function CookieConsent() {
 
   function decide(value: boolean) {
     saveConsent(value)
+    if (value && !analytics) pushConsentDefaults()
     if (!value && analytics) {
       ;(window as GtagWindow).gtag?.("consent", "update", { analytics_storage: "denied" })
       deleteAnalyticsCookies()
@@ -59,18 +61,8 @@ export function CookieConsent() {
 
   return (
     <>
-      {ready && analytics ? (
-        <>
-          <Script src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} strategy="afterInteractive" />
-          <Script id="ga-init" strategy="afterInteractive">
-            {`window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('consent', 'default', { analytics_storage: 'granted', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied' });
-gtag('js', new Date());
-gtag('config', '${GA_ID}');`}
-          </Script>
-        </>
-      ) : null}
+      {/* GA (@next/third-parties) solo se monta con el consentimiento dado: antes no hay cookies ni peticiones a Google */}
+      {ready && analytics ? <GoogleAnalytics gaId={GA_ID} /> : null}
 
       {open ? (
         <div

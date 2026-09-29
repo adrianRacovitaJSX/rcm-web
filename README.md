@@ -48,9 +48,16 @@ Variables de entorno (en Vercel: Settings, Environment Variables; en local: `.en
 
 | Variable | Qué es |
 | --- | --- |
-| `NEXT_PUBLIC_GA_ID` | ID de medición de GA4 (`G-XXXXXXX`). Sin él no se carga GA ni aparece el banner. |
+| `NEXT_PUBLIC_GA_ID` | Opcional. El ID de GA4 (`G-Z25703QYCP`) ya va en `lib/consent.ts` y solo se activa en compilaciones de producción; esta variable lo sustituye. |
+| `NEXT_PUBLIC_SITE_URL` | Opcional. Dirección de la web. Si no se define, en Vercel se usa la de producción del proyecto (la `.vercel.app` y, al conectar el dominio, `revisioncochemadrid.es`). |
 | `NEXT_PUBLIC_GSC_VERIFICATION` | En Search Console, verificar con el método "Etiqueta HTML" y copiar solo el valor de `content`. También vale verificar por DNS en Dinahosting y dejarla vacía. |
 | `NEXT_PUBLIC_INFORMES_URL` | App de informes, donde está la verificación. Por defecto `https://informes.revisioncochemadrid.es`. Los botones "Verifica tu informe" llevan a `/verificar` de esa app. |
+
+Indexación: la web solo se deja indexar en `https://revisioncochemadrid.es`. En `.vercel.app` y en las previews, `robots.txt` bloquea el rastreo y las páginas llevan `noindex`, así que se puede enseñar al cliente sin que Google indexe la versión provisional. Al conectar el dominio no hay que tocar nada: basta con volver a desplegar. En Vercel, redirigir `www.revisioncochemadrid.es` al dominio sin `www`.
+
+`sitemap.xml` incluye solo la página principal (las legales llevan `noindex`) con sus imágenes principales. En Search Console: enviar `https://revisioncochemadrid.es/sitemap.xml`.
+
+GA se integra con `@next/third-parties` (`GoogleAnalytics`), pero solo se monta tras aceptar las cookies.
 
 Cómo funciona el consentimiento (`components/cookie-consent.tsx`), según la guía de cookies de la AEPD:
 
@@ -60,6 +67,17 @@ Cómo funciona el consentimiento (`components/cookie-consent.tsx`), según la gu
 - Si se añade otra herramienta con cookies (Meta Pixel, Hotjar...), hay que añadirla al banner y a la tabla de `/cookies` antes de activarla.
 
 En GA4, marcar como eventos clave `form_enviado`, `cta_whatsapp` y `cta_llamar` para medir conversiones.
+
+## Emails (Resend)
+
+El formulario de reserva (`app/api/reserva/route.ts`) envía, desde `no-reply@revisioncochemadrid.es`:
+
+- **Aviso de nueva reserva** a `contacto@revisioncochemadrid.es` (o `BOOKING_NOTIFY_TO`), con los datos y botones para responder por WhatsApp o llamar. Si el cliente dejó email, al responder al correo le contestas a él.
+- **Confirmación al cliente**, solo si dejó su email (campo opcional).
+
+Si el envío falla, el formulario ofrece mandar la solicitud por WhatsApp ya escrita: no se pierde ninguna. Antispam: campo trampa invisible y máximo 5 envíos cada 10 minutos por IP.
+
+Variables: `RESEND_API_KEY`, `EMAIL_FROM` y, opcional, `BOOKING_NOTIFY_TO`. El diseño de los emails está en `lib/email-layout.ts` (la app de informes tiene una copia).
 
 ## Conversión (CRO)
 

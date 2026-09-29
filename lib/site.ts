@@ -4,10 +4,24 @@
 // Los valores marcados con PENDIENTE son provisionales: hay que confirmarlos o
 // sustituirlos antes de publicar la web.
 
+/** Dominio definitivo. Solo en él se deja indexar la web. */
+export const FINAL_URL = "https://revisioncochemadrid.es"
+
+/** Dirección de la web según dónde se ejecute:
+ *  - NEXT_PUBLIC_SITE_URL, si se define a mano.
+ *  - En Vercel, la dirección de producción del proyecto (la .vercel.app y, cuando se conecte
+ *    el dominio, revisioncochemadrid.es), que Vercel expone en VERCEL_PROJECT_PRODUCTION_URL.
+ *  - Fuera de Vercel, el dominio definitivo. */
+function resolveSiteUrl() {
+  if (process.env.NEXT_PUBLIC_SITE_URL) return process.env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, "")
+  if (process.env.VERCEL_PROJECT_PRODUCTION_URL) return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+  return FINAL_URL
+}
+
 export const site = {
   name: "Revisión Coche Madrid",
   shortName: "RCM",
-  url: "https://revisioncochemadrid.es",
+  url: resolveSiteUrl(),
   // App de informes: aloja la verificación pública de informes (/verificar)
   informesUrl: process.env.NEXT_PUBLIC_INFORMES_URL ?? "https://informes.revisioncochemadrid.es",
   description:
@@ -49,6 +63,9 @@ export const legalDetails = () =>
 
 export const whatsappUrl = (text = "Hola, quiero reservar una revisión de un coche usado.") =>
   `https://wa.me/${site.whatsapp}?text=${encodeURIComponent(text)}`
+
+/** Google solo indexa la web en el dominio definitivo y en producción (nunca en .vercel.app ni en previews). */
+export const isIndexable = site.url === FINAL_URL && process.env.VERCEL_ENV !== "preview"
 
 export const verifyUrl = `${site.informesUrl}/verificar`
 

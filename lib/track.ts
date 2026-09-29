@@ -9,13 +9,16 @@ export type ConversionEvent =
   | "form_enviado"
   | "form_error"
 
+import { sendGAEvent } from "@next/third-parties/google"
+
 type DataLayerWindow = Window & { dataLayer?: unknown[]; gtag?: (...args: unknown[]) => void }
 
 export function track(event: ConversionEvent, data: Record<string, unknown> = {}) {
   if (typeof window === "undefined") return
   const w = window as DataLayerWindow
+  // gtag solo existe si GA está cargado, es decir, si el usuario aceptó la analítica
   if (w.gtag) {
-    w.gtag("event", event, data)
+    sendGAEvent("event", event, data)
     return
   }
   w.dataLayer = w.dataLayer ?? []

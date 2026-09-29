@@ -12,7 +12,7 @@ export default function Privacidad() {
       <p>{[site.name, ...legalDetails()].join(". ")}. Contacto: {site.email}.</p>
       <h2>Qué datos tratamos y para qué</h2>
       <p>
-        Los que nos das en el formulario de reserva o por WhatsApp (nombre, teléfono, datos del coche y zona) para gestionar tu cita, hacer la
+        Los que nos das en el formulario de reserva o por WhatsApp (nombre, teléfono, email si lo indicas, datos del coche y zona) para gestionar tu cita, hacer la
         revisión y enviarte el informe.
       </p>
       <h2>Base legal</h2>
@@ -21,7 +21,9 @@ export default function Privacidad() {
       <p>Mientras dure la relación y, después, el tiempo que exijan las obligaciones fiscales y contables.</p>
       <h2>Con quién los compartimos</h2>
       <p>
-        Con nadie para fines comerciales. Los mensajes por WhatsApp los gestiona WhatsApp Ireland Limited según sus propias condiciones.
+        Con nadie para fines comerciales. Para gestionar las reservas usamos proveedores que tratan los datos por encargo nuestro: Resend
+        (envío de los emails del formulario y de los informes) y Vercel (alojamiento de la web). Los mensajes por WhatsApp los gestiona
+        WhatsApp Ireland Limited según sus propias condiciones.
       </p>
       <h2>Tus derechos</h2>
       <p>

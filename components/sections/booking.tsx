@@ -1,20 +1,21 @@
 "use client"
 
 import { useState } from "react"
-import { ArrowRight, CheckCircle, Clock, EnvelopeSimple, WarningCircle } from "@phosphor-icons/react"
+import { ArrowRight, CheckCircle, CircleNotch, Clock, EnvelopeSimple, WarningCircle, WhatsappLogo } from "@phosphor-icons/react"
 import { PhoneLink, WhatsappButton } from "../cta"
 import { areas, site, whatsappUrl } from "@/lib/site"
 import { track } from "@/lib/track"
 
-type Fields = { nombre: string; telefono: string; coche: string; zona: string; fecha: string; privacidad: boolean }
+type Fields = { nombre: string; telefono: string; email: string; coche: string; zona: string; fecha: string; privacidad: boolean }
 type Errors = Partial<Record<keyof Fields, string>>
 
-const empty: Fields = { nombre: "", telefono: "", coche: "", zona: "", fecha: "", privacidad: false }
+const empty: Fields = { nombre: "", telefono: "", email: "", coche: "", zona: "", fecha: "", privacidad: false }
 
 function validate(f: Fields): Errors {
   const e: Errors = {}
   if (f.nombre.trim().length < 2) e.nombre = "Escribe tu nombre."
   if (!/^\+?[\d\s-]{9,15}$/.test(f.telefono.trim())) e.telefono = "Escribe un teléfono de 9 cifras."
+  if (f.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.email.trim())) e.email = "Revisa el email o déjalo en blanco."
   if (f.coche.trim().length < 3) e.coche = "Pega el enlace del anuncio o escribe marca y modelo."
   if (f.zona.trim().length < 2) e.zona = "Dinos dónde está el coche."
   if (!f.privacidad) e.privacidad = "Necesitamos tu permiso para contactarte."
@@ -38,14 +39,16 @@ const input =
 export function Booking() {
   const [f, setF] = useState<Fields>(empty)
   const [errors, setErrors] = useState<Errors>({})
-  const [sentUrl, setSentUrl] = useState<string | null>(null)
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "failed">("idle")
+  // Campo trampa: invisible para personas; los bots lo rellenan
+  const [web, setWeb] = useState("")
 
   const set = <K extends keyof Fields>(k: K, v: Fields[K]) => {
     setF((prev) => ({ ...prev, [k]: v }))
     if (errors[k]) setErrors((prev) => ({ ...prev, [k]: undefined }))
   }
 
-  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     const found = validate(f)
     setErrors(found)
@@ -55,10 +58,21 @@ export function Booking() {
       document.getElementById(`reserva-${firstError}`)?.focus()
       return
     }
-    const url = whatsappUrl(mensaje(f))
-    track("form_enviado", { zona: f.zona })
-    window.open(url, "_blank", "noopener")
-    setSentUrl(url)
+    setStatus("sending")
+    try {
+      const res = await fetch("/api/reserva", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...f, web }),
+      })
+      if (!res.ok) throw new Error()
+      track("form_enviado", { zona: f.zona })
+      setStatus("sent")
+    } catch {
+      // Si el envío falla, la solicitud no se pierde: se ofrece mandarla por WhatsApp ya escrita
+      track("form_error", { campo: "envio" })
+      setStatus("failed")
+    }
   }
 
   const err = (k: keyof Fields) =>
@@ -101,23 +115,39 @@ export function Booking() {
           </div>
         </div>
 
-        <div className="rounded-2xl border border-line bg-ink-2 p-6 sm:p-9">
-          {sentUrl ? (
+        <div className="relative rounded-2xl border border-line bg-ink-2 p-6 sm:p-9">
+          {status === "sent" ? (
             <div role="status" className="flex min-h-[420px] flex-col items-start justify-center">
               <CheckCircle weight="fill" className="size-12 text-ok" aria-hidden />
-              <h3 className="display mt-6 text-3xl font-bold">Ya casi está.</h3>
+              <h3 className="display mt-6 text-3xl font-bold">Solicitud recibida.</h3>
               <p className="mt-3 max-w-[42ch] text-lg leading-relaxed text-mute">
-                Hemos abierto WhatsApp con tu solicitud escrita. Solo falta pulsar enviar y te respondemos con la cita.
+                Te escribimos por WhatsApp en unas horas para confirmar el precio y la cita.
+                {f.email ? " Te hemos enviado un email con el resumen." : ""}
               </p>
-              <a href={sentUrl} target="_blank" rel="noopener" className="mt-6 font-semibold text-brand underline underline-offset-4">
-                Si no se ha abierto, pulsa aquí
+              <a href={whatsappUrl(mensaje(f))} target="_blank" rel="noopener" onClick={() => track("cta_whatsapp", { from: "reserva-enviada" })} className="mt-6 inline-flex items-center gap-2 font-semibold text-bone underline decoration-brand underline-offset-4 hover:text-brand">
+                <WhatsappLogo weight="fill" className="size-5 text-[#25d366]" aria-hidden />
+                ¿Prefieres escribirnos ya? Abre WhatsApp
               </a>
-              <button type="button" onClick={() => { setF(empty); setSentUrl(null) }} className="mt-4 text-sm text-mute hover:text-bone">
+              <button type="button" onClick={() => { setF(empty); setStatus("idle") }} className="mt-4 text-sm text-mute hover:text-bone">
                 Reservar otro coche
               </button>
             </div>
-          ) : (
+                    ) : (
             <form noValidate onSubmit={onSubmit} className="grid gap-5">
+              {status === "failed" ? (
+                <div role="alert" className="rounded-xl border border-bad/40 bg-bad/10 p-4 text-[15px] leading-relaxed">
+                  <p className="font-semibold text-bone">No hemos podido enviar la solicitud.</p>
+                  <p className="mt-1 text-mute">Mándanosla por WhatsApp: ya va escrita con tus datos.</p>
+                  <a href={whatsappUrl(mensaje(f))} target="_blank" rel="noopener" onClick={() => track("cta_whatsapp", { from: "reserva-fallida" })} className="mt-3 inline-flex items-center gap-2 font-semibold text-bone underline decoration-brand underline-offset-4">
+                    <WhatsappLogo weight="fill" className="size-5 text-[#25d366]" aria-hidden /> Enviar por WhatsApp
+                  </a>
+                </div>
+              ) : null}
+              {/* Campo trampa para bots: oculto a la vista y a lectores de pantalla */}
+              <div aria-hidden className="absolute -left-[9999px] h-0 w-0 overflow-hidden">
+                <label htmlFor="reserva-web">Web</label>
+                <input id="reserva-web" tabIndex={-1} autoComplete="off" value={web} onChange={(e) => setWeb(e.target.value)} />
+              </div>
               <div className="grid gap-5 sm:grid-cols-2">
                 <div className="grid gap-2">
                   <label htmlFor="reserva-nombre" className="text-sm font-semibold">Nombre</label>
@@ -129,6 +159,14 @@ export function Booking() {
                   <input {...aria("telefono")} type="tel" inputMode="tel" autoComplete="tel" value={f.telefono} onChange={(e) => set("telefono", e.target.value)} className={`${input} ${errors.telefono ? "border-bad" : "border-white/15"}`} />
                   {err("telefono")}
                 </div>
+              </div>
+
+              <div className="grid gap-2">
+                <label htmlFor="reserva-email" className="text-sm font-semibold">
+                  Email <span className="font-normal text-mute">(opcional, para mandarte el resumen)</span>
+                </label>
+                <input {...aria("email")} type="email" inputMode="email" autoComplete="email" autoCapitalize="none" value={f.email} onChange={(e) => set("email", e.target.value)} className={`${input} ${errors.email ? "border-bad" : "border-white/15"}`} />
+                {err("email")}
               </div>
 
               <div className="grid gap-2">
@@ -173,12 +211,17 @@ export function Booking() {
 
               <button
                 type="submit"
-                className="group mt-2 inline-flex h-14 items-center justify-center gap-2 rounded-full bg-brand px-8 text-base font-semibold text-ink transition-[transform,background-color] hover:bg-brand-soft active:scale-[0.98]"
+                disabled={status === "sending"}
+                className="group mt-2 inline-flex h-14 items-center justify-center gap-2 rounded-full bg-brand px-8 text-base font-semibold text-ink transition-[transform,background-color] hover:bg-brand-soft active:scale-[0.98] disabled:opacity-70"
               >
-                Reservar revisión
-                <ArrowRight weight="bold" className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden />
+                {status === "sending" ? "Enviando…" : "Reservar revisión"}
+                {status === "sending" ? (
+                  <CircleNotch weight="bold" className="size-4 animate-spin" aria-hidden />
+                ) : (
+                  <ArrowRight weight="bold" className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden />
+                )}
               </button>
-              <p className="text-sm text-mute-2">Se abrirá WhatsApp con tu solicitud ya escrita. No pagas nada hasta confirmar la cita.</p>
+              <p className="text-sm text-mute-2">Te contestamos por WhatsApp en unas horas. No pagas nada hasta confirmar la cita.</p>
             </form>
           )}
         </div>
