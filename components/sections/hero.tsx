@@ -1,5 +1,7 @@
 import Image from "next/image"
 import { ReservarButton, WhatsappButton } from "../cta"
+import { ReportViewerTrigger } from "../report-viewer"
+import { examplePage } from "@/lib/example-report"
 
 export function Hero() {
   return (
@@ -19,7 +21,7 @@ export function Hero() {
           </div>
           <div>
             <p className="mt-6 max-w-[34rem] text-lg leading-relaxed text-mute">
-              Un mecánico va a ver el coche, revisa 51 puntos y te entrega un informe con fotos y vídeo.
+              Te explicamos el estado actual del coche con diagnosis, kilómetros certificados y fotos y vídeo de cada punto revisado.
             </p>
           </div>
           <div className="rise" style={{ "--rise-delay": "0.05s" } as React.CSSProperties}>
@@ -42,17 +44,20 @@ export function Hero() {
             />
             <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-ink/60 via-transparent to-transparent" />
           </div>
-          {/* Página real del informe: muestra el producto que recibe el cliente */}
-          <div className="absolute -bottom-8 -left-2 w-[34%] rotate-[-4deg] overflow-hidden rounded-lg border border-white/10 shadow-[0_24px_60px_-12px_rgb(0_0_0/0.7)] sm:-left-6 lg:-left-4">
+          {/* Página real del informe: muestra el producto que recibe el cliente y abre el visor */}
+          <ReportViewerTrigger
+            label="Ver un informe de ejemplo"
+            className="absolute -bottom-8 -left-2 w-[34%] rotate-[-4deg] overflow-hidden rounded-lg border border-white/10 shadow-[0_24px_60px_-12px_rgb(0_0_0/0.7)] transition-transform duration-300 hover:rotate-[-2deg] hover:scale-[1.03] sm:-left-6 lg:-left-4"
+          >
             <Image
-              src="/images/informe-ejemplo-1.jpg"
+              src={examplePage(1)}
               alt="Primera página de un informe de revisión de RCM"
               width={1241}
               height={1754}
               sizes="(min-width: 1024px) 16vw, 34vw"
               className="h-auto w-full"
             />
-          </div>
+          </ReportViewerTrigger>
         </div>
       </div>
     </section>

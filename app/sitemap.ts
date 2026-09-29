@@ -15,7 +15,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
         `${site.url}/images/mecanico-diagnosis.jpg`,
         `${site.url}/images/bajos-coche.jpg`,
         `${site.url}/images/mapa-comunidad-madrid.jpg`,
-        `${site.url}/images/informe-ejemplo-1.jpg`,
+        `${site.url}/informe-ejemplo/pagina-1.jpg`,
       ],
     },
   ]

@@ -6,13 +6,13 @@ const risks = [
   {
     icon: Gauge,
     title: "Kilómetros que no cuadran",
-    body: "Comparamos el cuadro con el desgaste de volante, pedales y asientos, y con el historial de mantenimiento.",
+    body: "Cruzamos el cuadro con las horas de motor, los litros de combustible consumidos y los registros de las centralitas.",
     tone: "bg-brand/[0.08] border-brand/25",
   },
   {
     icon: CarProfile,
     title: "Golpes y repintados",
-    body: "Buscamos cambios de tono entre piezas, holguras en capó y puertas, y óxido o golpes en los bajos.",
+    body: "Medimos la pintura con espesímetro y comprobamos las fechas de fabricación de piezas y cristales para detectar las cambiadas.",
     tone: "bg-ink-2 border-line",
   },
   {

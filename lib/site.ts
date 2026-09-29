@@ -145,6 +145,10 @@ export const faqs: { q: string; a: string }[] = [
     a: "Sí. Cada incidencia lleva su foto o vídeo y una nota del mecánico, así que puedes enseñárselo al vendedor y pedir que la arregle o que rebaje el precio.",
   },
   {
+    q: "¿Y si el coche está mal?",
+    a: "Te lo decimos claro para que no lo compres. Y para que sigas buscando sin miedo, durante las dos semanas siguientes tienes un 20 % de descuento en la revisión de cada coche que quieras ver, hasta que encuentres el tuyo.",
+  },
+  {
     q: "¿Qué pasa si el vendedor cancela o no deja revisar el coche?",
     a: "Si nos avisas antes de salir, cambiamos la cita sin coste. Si el vendedor no aparece o no deja hacer la revisión cuando ya estamos allí, solo se cobra el desplazamiento.",
   },

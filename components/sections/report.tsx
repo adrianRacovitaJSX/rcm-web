@@ -1,7 +1,9 @@
 import Image from "next/image"
-import { ArrowUpRight, Fingerprint, ListMagnifyingGlass, SealCheck, ShieldCheck, VideoCamera } from "@phosphor-icons/react/dist/ssr"
+import { Eye, Fingerprint, ListMagnifyingGlass, SealCheck, ShieldCheck, VideoCamera } from "@phosphor-icons/react/dist/ssr"
 import { Reveal } from "../reveal"
 import { verifyUrl } from "@/lib/site"
+import { ReportViewerTrigger } from "../report-viewer"
+import { examplePage } from "@/lib/example-report"
 
 // Lo que hace el informe de la app de verdad (ver informes-rcm/lib/pdf).
 const features = [
@@ -17,14 +19,14 @@ export function Report() {
       <div className="mx-auto grid max-w-7xl items-center gap-16 px-5 py-24 md:px-8 md:py-32 lg:grid-cols-[1fr_1.1fr]">
         {/* Páginas reales de un informe. PENDIENTE: sustituir por un informe real con los datos anonimizados */}
         <Reveal className="relative mx-auto w-full max-w-[520px]">
-          <div className="relative aspect-[4/5]">
+          <ReportViewerTrigger label="Ver un informe de ejemplo" className="group relative block aspect-[4/5] w-full">
             <div className="absolute right-0 top-0 w-[72%] rotate-[5deg] overflow-hidden rounded-lg border border-white/10 opacity-80 shadow-[0_30px_70px_-20px_rgb(0_0_0/0.8)]">
-              <Image src="/images/informe-ejemplo-3.jpg" alt="Página de puntos revisados de un informe de RCM" width={1241} height={1754} sizes="(min-width: 1024px) 26vw, 70vw" className="h-auto w-full" />
+              <Image src={examplePage(3)} alt="Página de puntos revisados de un informe de RCM" width={1241} height={1754} sizes="(min-width: 1024px) 26vw, 70vw" className="h-auto w-full" />
             </div>
-            <div className="absolute bottom-0 left-0 w-[72%] -rotate-[3deg] overflow-hidden rounded-lg border border-white/10 shadow-[0_30px_70px_-20px_rgb(0_0_0/0.9)]">
-              <Image src="/images/informe-ejemplo-1.jpg" alt="Portada de un informe de RCM con las incidencias destacadas" width={1241} height={1754} sizes="(min-width: 1024px) 26vw, 70vw" className="h-auto w-full" />
+            <div className="absolute bottom-0 left-0 w-[72%] -rotate-[3deg] overflow-hidden rounded-lg border border-white/10 shadow-[0_30px_70px_-20px_rgb(0_0_0/0.9)] transition-transform duration-300 group-hover:-rotate-[1deg] group-hover:scale-[1.02]">
+              <Image src={examplePage(1)} alt="Portada de un informe de RCM con las incidencias destacadas" width={1241} height={1754} sizes="(min-width: 1024px) 26vw, 70vw" className="h-auto w-full" />
             </div>
-          </div>
+          </ReportViewerTrigger>
         </Reveal>
 
         <div>
@@ -58,15 +60,10 @@ export function Report() {
                 <ShieldCheck weight="duotone" className="size-5 text-brand" aria-hidden />
                 Verifica tu informe
               </a>
-              <a
-                href="/informe-ejemplo.pdf"
-                target="_blank"
-                rel="noopener"
-                className="inline-flex items-center gap-1.5 font-semibold text-bone underline decoration-brand decoration-2 underline-offset-[6px] hover:text-brand"
-              >
+              <ReportViewerTrigger className="inline-flex items-center gap-1.5 font-semibold text-bone underline decoration-brand decoration-2 underline-offset-[6px] hover:text-brand">
+                <Eye weight="bold" className="size-4" aria-hidden />
                 Ver un informe de ejemplo
-                <ArrowUpRight weight="bold" className="size-4" aria-hidden />
-              </a>
+              </ReportViewerTrigger>
             </div>
           </Reveal>
         </div>

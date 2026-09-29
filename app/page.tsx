@@ -13,6 +13,7 @@ import { Testimonials } from "@/components/sections/testimonials"
 import { Areas } from "@/components/sections/areas"
 import { Faq } from "@/components/sections/faq"
 import { Booking } from "@/components/sections/booking"
+import { ReportViewerProvider } from "@/components/report-viewer"
 
 // Orden pensado para la conversión: promesa y acción (hero), qué incluye, el miedo
 // que resolvemos, la prueba (checklist e informe), cómo es el proceso, precio,
@@ -22,19 +23,21 @@ export default function HomePage() {
     <>
       <JsonLd />
       <SiteHeader />
-      <main id="contenido">
-        <Hero />
-        <TrustBar />
-        <Risks />
-        <ChecklistTabs />
-        <Process />
-        <Report />
-        <Pricing />
-        <Testimonials />
-        <Areas />
-        <Faq />
-        <Booking />
-      </main>
+      <ReportViewerProvider>
+        <main id="contenido">
+          <Hero />
+          <TrustBar />
+          <Risks />
+          <ChecklistTabs />
+          <Process />
+          <Report />
+          <Pricing />
+          <Testimonials />
+          <Areas />
+          <Faq />
+          <Booking />
+        </main>
+      </ReportViewerProvider>
       <SiteFooter />
       <MobileCtaBar />
     </>

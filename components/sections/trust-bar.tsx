@@ -5,8 +5,8 @@ import { TOTAL_ITEMS } from "@/lib/checklist"
 // Lo que el cliente recibe, en una línea. Son hechos del servicio, no cifras de adorno.
 const facts = [
   { icon: ListChecks, text: `${TOTAL_ITEMS} puntos revisados` },
-  { icon: Cpu, text: "Diagnosis electrónica" },
-  { icon: Camera, text: "Fotos y vídeo de cada fallo" },
+  { icon: Cpu, text: "Diagnosis y km certificados" },
+  { icon: Camera, text: "Fotos y vídeo de cada punto" },
   { icon: FilePdf, text: "Informe en PDF al terminar" },
 ]
 

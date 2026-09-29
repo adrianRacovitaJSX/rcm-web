@@ -8,6 +8,9 @@
 - Diagnosis electrónica: lectura de códigos de error de la centralita.
 - Prueba en marcha si el vendedor la permite.
 - Informe en PDF al terminar, con código único de documento y huella digital de cada foto y vídeo.
+- Kilómetros certificados: se cruzan con horas de motor, litros de combustible consumidos y registros de las centralitas.
+- Carrocería: pintura medida con espesímetro y fechas de fabricación de piezas y cristales.
+- Si el coche está mal, 20 % de descuento en las revisiones de los coches que se vean en las dos semanas siguientes.
 - Sirve para coches de particular y de concesionario, también híbridos y eléctricos.
 
 ## Precio

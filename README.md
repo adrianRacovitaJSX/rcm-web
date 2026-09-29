@@ -37,7 +37,7 @@ Sustituir cada archivo manteniendo el mismo nombre (o cambiar la ruta en el comp
 | `public/images/mecanico-diagnosis.jpg` | 1600 x 1066 (3:2) | Hero | Hecho: mecánico con el ordenador de diagnosis |
 | `public/images/bajos-coche.jpg` | 1600 x 1066 | "Lo que no se ve en las fotos" | Hecho: bajos del coche desde el foso |
 | `public/images/mapa-comunidad-madrid.jpg` | 880 x 880 (cuadrado) | Zona de servicio | Hecho: mapa recortado de `assets/originales/madrid.png` |
-| `public/images/informe-ejemplo-1.jpg`, `-3.jpg` | 1241 x 1754 | Hero e informe | Páginas de un informe real con datos anonimizados |
+| `public/informe-ejemplo/pagina-1.jpg` a `pagina-6.jpg` | 1241 x 1754 | Hero, sección del informe y visor | Páginas del informe de ejemplo (se sacan del PDF a 150 ppp) |
 | `public/informe-ejemplo.pdf` | | "Ver un informe de ejemplo" | El mismo informe completo |
 
 Las imágenes actuales del informe salen de un informe de prueba de la app con fotos dibujadas. `diagnosis.jpg` y `entrega-informe.jpg` sobran por si se quieren usar en otra sección. Los originales de las fotos están en `assets/originales/` (fuera de `public`, no se publican).
