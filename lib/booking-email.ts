@@ -9,6 +9,11 @@ export type Booking = { nombre: string; telefono: string; coche: string; zona: s
 const FROM = process.env.EMAIL_FROM ?? `${site.name} <no-reply@revisioncochemadrid.es>`
 /** Adónde llegan las reservas. */
 const NOTIFY_TO = process.env.BOOKING_NOTIFY_TO ?? site.email
+/** Copia oculta de cada reserva. BOOKING_NOTIFY_BCC (separadas por comas) sustituye la lista. */
+const NOTIFY_BCC = (process.env.BOOKING_NOTIFY_BCC ?? "epicarscoches@gmail.com,marteloemerson@gmail.com")
+  .split(",")
+  .map((e) => e.trim())
+  .filter(Boolean)
 // Los emails se leen fuera de la web: logo y enlaces siempre con el dominio definitivo
 const LOGO = `${FINAL_URL}/logo-rcm.png`
 const footer = { name: site.name, phone: site.phone, email: site.email, web: FINAL_URL }
@@ -117,6 +122,8 @@ export async function sendBookingEmails(b: Booking, testTo?: string) {
   const { error } = await resend.emails.send({
     from: FROM,
     to: [testTo ?? NOTIFY_TO],
+    // En las pruebas (testTo) no se copia a nadie
+    bcc: testTo ? undefined : NOTIFY_BCC,
     replyTo: b.email || undefined,
     subject: aviso.subject,
     html: aviso.html,

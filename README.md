@@ -72,7 +72,7 @@ En GA4, marcar como eventos clave `form_enviado`, `cta_whatsapp` y `cta_llamar` 
 
 El formulario de reserva (`app/api/reserva/route.ts`) envía, desde `no-reply@revisioncochemadrid.es`:
 
-- **Aviso de nueva reserva** a `contacto@revisioncochemadrid.es` (o `BOOKING_NOTIFY_TO`), con los datos y botones para responder por WhatsApp o llamar. Si el cliente dejó email, al responder al correo le contestas a él.
+- **Aviso de nueva reserva** a `contacto@revisioncochemadrid.es` (o `BOOKING_NOTIFY_TO`), con copia oculta a `epicarscoches@gmail.com` y `marteloemerson@gmail.com` (o `BOOKING_NOTIFY_BCC`), con los datos y botones para responder por WhatsApp o llamar. Si el cliente dejó email, al responder al correo le contestas a él.
 - **Confirmación al cliente**, solo si dejó su email (campo opcional).
 
 Si el envío falla, el formulario ofrece mandar la solicitud por WhatsApp ya escrita: no se pierde ninguna. Antispam: campo trampa invisible y máximo 5 envíos cada 10 minutos por IP.
