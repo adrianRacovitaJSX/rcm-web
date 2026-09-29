@@ -64,8 +64,10 @@ export const legalDetails = () =>
 export const whatsappUrl = (text = "Hola, quiero reservar una revisión de un coche usado.") =>
   `https://wa.me/${site.whatsapp}?text=${encodeURIComponent(text)}`
 
-/** Google solo indexa la web en el dominio definitivo y en producción (nunca en .vercel.app ni en previews). */
-export const isIndexable = site.url === FINAL_URL && process.env.VERCEL_ENV !== "preview"
+/** Google solo indexa la web en el dominio definitivo (con o sin www, según cuál sea el
+ *  principal en Vercel) y en producción: nunca en .vercel.app ni en previews. */
+const FINAL_HOSTS = ["revisioncochemadrid.es", "www.revisioncochemadrid.es"]
+export const isIndexable = FINAL_HOSTS.includes(new URL(site.url).host) && process.env.VERCEL_ENV !== "preview"
 
 export const verifyUrl = `${site.informesUrl}/verificar`
 
