@@ -1,0 +1,23 @@
+# Revisión Coche Madrid (RCM)
+
+> Servicio de revisión pre-compra de coches usados en toda la Comunidad de Madrid. Un mecánico va a donde está el coche, revisa 51 puntos (motor, conducción, aparatos e interior y exterior), conecta la máquina de diagnosis y entrega un informe en PDF con fotos y vídeo de cada incidencia.
+
+## Servicio
+
+- Revisión de 51 puntos siguiendo siempre la misma lista.
+- Diagnosis electrónica: lectura de códigos de error de la centralita.
+- Prueba en marcha si el vendedor la permite.
+- Informe en PDF al terminar, con código único de documento y huella digital de cada foto y vídeo.
+- Sirve para coches de particular y de concesionario, también híbridos y eléctricos.
+
+## Precio
+
+- Revisión pre-compra: 245 € IVA incluido.
+- Coches de alta gama (Ferrari, Lamborghini y similares): 350 € IVA incluido.
+
+## Contacto
+
+- Web: https://revisioncochemadrid.es
+- Teléfono y WhatsApp: +34 643 34 54 59
+- Email: contacto@revisioncochemadrid.es
+- Reserva: https://revisioncochemadrid.es/#reservar

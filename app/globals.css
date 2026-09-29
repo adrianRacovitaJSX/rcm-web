@@ -1,0 +1,134 @@
+@import "tailwindcss";
+
+/*
+  Sistema visual de RCM
+  - Tema único oscuro: el logo es blanco y naranja sobre carbón.
+  - Un solo acento: el naranja del logo (#F17205). El texto sobre naranja va en carbón (contraste 6,7:1).
+  - Radios: botones y píldoras redondos del todo, paneles 16px (rounded-2xl), campos 12px (rounded-xl).
+  - Capas (z-index): 30 barra inferior móvil, 40 cabecera, 50 menú móvil.
+*/
+@theme {
+  --color-ink: #0b0a0a;
+  --color-ink-2: #121111;
+  --color-ink-3: #1a1818;
+  --color-line: rgb(255 255 255 / 0.09);
+  --color-bone: #f3f1ee;
+  --color-mute: #a8a29e;
+  --color-mute-2: #8a8480;
+  --color-brand: #f17205;
+  --color-brand-soft: #ff8a2a;
+  --color-ok: #34d399;
+  --color-warn: #fbbf24;
+  --color-bad: #f87171;
+
+  --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+    background: var(--color-ink);
+    -webkit-tap-highlight-color: transparent;
+    scroll-padding-top: 5rem;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    html { scroll-behavior: smooth; }
+  }
+  body {
+    @apply bg-ink text-bone antialiased;
+    font-feature-settings: "ss01";
+  }
+  ::selection {
+    background: var(--color-brand);
+    color: var(--color-ink);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-brand);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+}
+
+@layer utilities {
+  /* Titulares en la anchura extendida de Archivo: más carácter de motor */
+  .display {
+    font-stretch: 118%;
+    letter-spacing: -0.035em;
+  }
+  .safe-bottom {
+    padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+  }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { scrollbar-width: none; }
+}
+
+/* Fondo del hero, por capas (de arriba abajo):
+   1. Haz de luz diagonal muy suave, como el de un faro.
+   2. Luz cálida detrás de la foto.
+   3. Resplandor pequeño detrás del titular.
+   4. Fundido inferior hacia el color de la franja siguiente.
+   ::before añade la trama de fibra de carbono, que se desvanece hacia los bordes. */
+.hero-bg {
+  background:
+    linear-gradient(112deg, transparent 38%, rgb(241 114 5 / 0.05) 50%, transparent 62%),
+    radial-gradient(ellipse 48% 62% at 76% 48%, rgb(241 114 5 / 0.2), transparent 70%),
+    radial-gradient(ellipse 38% 46% at 8% 12%, rgb(241 114 5 / 0.12), transparent 70%),
+    linear-gradient(to bottom, transparent 70%, var(--color-ink-2) 100%),
+    var(--color-ink);
+}
+.hero-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.55;
+  background:
+    repeating-linear-gradient(45deg, rgb(255 255 255 / 0.025) 0 2px, transparent 2px 6px),
+    repeating-linear-gradient(-45deg, rgb(0 0 0 / 0.35) 0 2px, transparent 2px 6px);
+  -webkit-mask-image: radial-gradient(ellipse 75% 70% at 55% 45%, #000 20%, transparent 75%);
+  mask-image: radial-gradient(ellipse 75% 70% at 55% 45%, #000 20%, transparent 75%);
+}
+@media (max-width: 1023px) {
+  /* En móvil la foto va debajo del texto: la luz cálida baja con ella */
+  .hero-bg {
+    background:
+      linear-gradient(160deg, transparent 40%, rgb(241 114 5 / 0.05) 55%, transparent 70%),
+      radial-gradient(ellipse 90% 40% at 50% 78%, rgb(241 114 5 / 0.18), transparent 70%),
+      radial-gradient(ellipse 70% 30% at 10% 8%, rgb(241 114 5 / 0.12), transparent 70%),
+      linear-gradient(to bottom, transparent 80%, var(--color-ink-2) 100%),
+      var(--color-ink);
+  }
+}
+
+/* Aparición al hacer scroll, solo con CSS. Sin soporte de animation-timeline
+   (o con "reducir movimiento"), el contenido se muestra tal cual. */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .reveal {
+      animation: reveal-in linear both;
+      animation-timeline: view();
+      animation-range: entry calc(0% + var(--reveal-offset, 0px)) entry calc(35% + var(--reveal-offset, 0px));
+    }
+  }
+  /* El hero se anima al cargar, rápido para no retrasar el titular */
+  .rise {
+    animation: reveal-in 0.6s var(--ease-out-expo) both;
+    animation-delay: var(--rise-delay, 0s);
+  }
+}
+@keyframes reveal-in {
+  from { opacity: 0; transform: translateY(22px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Grano muy sutil fijo encima de todo: da textura al negro sin repintar al hacer scroll */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
